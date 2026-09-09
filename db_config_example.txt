@@ -1,0 +1,11 @@
+This project reads its DB connection settings directly from Config.h
+(no separate config file is loaded at runtime). Before compiling on
+the server, open Config.h and confirm these match your existing setup:
+
+    DB_HOST     = "127.0.0.1"
+    DB_USER     = "root"
+    DB_PASSWORD = ""              <-- set your MySQL root password here
+    DB_NAME     = "order_system"  <-- your EXISTING database, unchanged
+    DB_PORT     = 3306
+
+No other files need editing.
