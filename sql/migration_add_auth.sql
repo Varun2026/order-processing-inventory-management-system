@@ -1,7 +1,6 @@
 USE order_system;
 
-ALTER TABLE users
-    ADD COLUMN IF NOT EXISTS password_hash VARCHAR(64) NOT NULL DEFAULT '';
+ALTER TABLE users ADD COLUMN password_hash VARCHAR(64) NOT NULL DEFAULT '';
 
 UPDATE users SET password_hash = '4e40e8ffe0ee32fa53e139147ed559229a5930f89c2204706fc174beb36210b3'
     WHERE username = 'alice';
