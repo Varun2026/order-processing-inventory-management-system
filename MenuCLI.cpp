@@ -174,12 +174,25 @@ void MenuCLI::runFlashSaleDemo() {
 
     std::cout << "\nLaunching " << numOrders << " concurrent order threads...\n\n";
 
-    OrderManager om(dao_, inventory_, /*verboseThreadDemo=*/true);
+    // Each thread gets its OWN database connection — sharing one MYSQL*
+    // across threads corrupts memory. Every thread opens a short-lived
+    // connection to the same order_system database instead.
     std::vector<std::thread> threads;
     for (int i = 0; i < numOrders; ++i) {
         std::string customerName = currentUser_.username + "_sim" + std::to_string(i + 1);
-        threads.emplace_back([&om, itemId, qtyEach, customerName]() {
+        threads.emplace_back([itemId, qtyEach, customerName]() {
+            mysql_thread_init();
+            DatabaseDAO threadDao;
+            if (!threadDao.connect()) {
+                std::cerr << "[" << customerName << "] Could not open DB connection for this thread.\n";
+                mysql_thread_end();
+                return;
+            }
+            InventoryManager threadInventory(threadDao);
+            OrderManager om(threadDao, threadInventory, /*verboseThreadDemo=*/true);
             om.processOrder(itemId, qtyEach, customerName);
+            threadDao.disconnect();
+            mysql_thread_end();
         });
     }
     for (auto& t : threads) t.join();
