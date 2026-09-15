@@ -12,7 +12,7 @@
 namespace Config {
     inline const std::string DB_HOST     = "127.0.0.1";
     inline const std::string DB_USER     = "root";
-    inline const std::string DB_PASSWORD = "";   // set your MySQL root password here
+    inline const std::string DB_PASSWORD = "NewRootPass123!";   // set your MySQL root password here
     inline const std::string DB_NAME     = "order_system";
     inline const unsigned int DB_PORT    = 3306;
 
